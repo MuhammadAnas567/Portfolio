@@ -47,7 +47,7 @@ export default function Portfolio() {
     async function formdata() {
       try {
       // API call to backend
-      const response =  await fetch('http://localhost:5000/api/submissions', {
+      const response =  await fetch("https://portfolio-backend-production-8cb0.up.railway.app/api/submissions", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

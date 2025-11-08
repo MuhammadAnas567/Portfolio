@@ -45,35 +45,35 @@ export default function Portfolio() {
 
     // Save to browser storage
     async function submitData() {
-       try {
+      const formData = new FormData();
+    formData.append("access_key", "aec8c1d2-f6ca-4e0b-846a-4528b274954a"); // apna Web3Forms key yahan lagao
+    formData.append("Full Name", contactForm.fullname);
+    formData.append("Email", contactForm.email);
+    formData.append("Phone", contactForm.phone);
+    formData.append("Service", contactForm.service);
+    formData.append("Message", contactForm.message);
+
     const response = await fetch("https://api.web3forms.com/submit", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      },
-      body: JSON.stringify({
-        access_key: "aec8c1d2-f6ca-4e0b-846a-4528b274954a",
-        fullname: contactForm.fullname,
-        email: contactForm.email,
-        phone: contactForm.phone,
-        service: contactForm.service,
-        message: contactForm.message
-      })
+      body: formData
     });
 
-    const result = await response.json();
-    if (result.success) {
-      alert("Thank you! Your message has been sent.");
-      setContactForm({ fullname: "", email: "", phone: "", service: "", message: "" });
+    const data = await response.json();
+
+    if (data.success) {
+      setFormSubmitted(true);
+      setContactForm({
+        fullname: "",
+        email: "",
+        phone: "",
+        service: "",
+        message: ""
+      });
+      setTimeout(() => setFormSubmitted(false), 3000);
     } else {
-      alert("Failed to send. Please try again.");
+      alert("Something went wrong. Please try again!");
     }
-  } catch (error) {
-    console.error("Error:", error);
-    alert("⚠️ Something went wrong. Please try again later.");
-  }
-    }
+  };
    submitData();
 };
 
@@ -390,55 +390,60 @@ export default function Portfolio() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
             {/* Form */}
-            <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="Your Name"
-                value={contactForm.fullname}
-                onChange={(e) => setContactForm({...contactForm, fullname: e.target.value})}
-                className="w-full px-6 py-4 bg-black border-2 border-gray-700 focus:border-orange-500 rounded-lg text-white placeholder-gray-500 outline-none transition"
-              />
-              <input
-                type="email"
-                placeholder="Your Email"
-                value={contactForm.email}
-                onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
-                className="w-full px-6 py-4 bg-black border-2 border-gray-700 focus:border-orange-500 rounded-lg text-white placeholder-gray-500 outline-none transition"
-              />
-              <input
-                type="tel"
-                placeholder="Your Phone"
-                value={contactForm.phone}
-                onChange={(e) => setContactForm({...contactForm, phone: e.target.value})}
-                className="w-full px-6 py-4 bg-black border-2 border-gray-700 focus:border-orange-500 rounded-lg text-white placeholder-gray-500 outline-none transition"
-              />
-              <select
-                value={contactForm.service}
-                onChange={(e) => setContactForm({...contactForm, service: e.target.value})}
-                className="w-full px-6 py-4 bg-black border-2 border-gray-700 focus:border-orange-500 rounded-lg text-white outline-none transition"
-              >
-                <option value="" className="text-gray-500">Select Service Type</option>
-                <option value="frontend">Front-End Development</option>
-                <option value="backend">Build Backend</option>
-                <option value="redesign">Website Redesign</option>
-                <option value="bugfix">Bug Fixing</option>
-                <option value="landing">Landing Page Development</option>
-                <option value="other">Other</option>
-              </select>
-              <textarea
-                placeholder="Your Message"
-                value={contactForm.message}
-                onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
-                className="w-full px-6 py-4 bg-black border-2 border-gray-700 focus:border-orange-500 rounded-lg text-white placeholder-gray-500 outline-none transition resize-none"
-                rows="5"
-              ></textarea>
-              <button
-                onClick={handleFormSubmit}
-                className="w-full px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-orange-500/50 transition"
-              >
-                {formSubmitted ? '✓ Message Sent!' : 'Send Message'}
-              </button>
-            </div>
+             <form onSubmit={handleFormSubmit} className="space-y-4">
+      <input
+        type="text"
+        placeholder="Your Name"
+        value={contactForm.fullname}
+        onChange={(e) => setContactForm({ ...contactForm, fullname: e.target.value })}
+        className="w-full px-6 py-4 bg-black border-2 border-gray-700 focus:border-orange-500 rounded-lg text-white placeholder-gray-500 outline-none transition"
+        required
+      />
+      <input
+        type="email"
+        placeholder="Your Email"
+        value={contactForm.email}
+        onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+        className="w-full px-6 py-4 bg-black border-2 border-gray-700 focus:border-orange-500 rounded-lg text-white placeholder-gray-500 outline-none transition"
+        required
+      />
+      <input
+        type="tel"
+        placeholder="Your Phone"
+        value={contactForm.phone}
+        onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })}
+        className="w-full px-6 py-4 bg-black border-2 border-gray-700 focus:border-orange-500 rounded-lg text-white placeholder-gray-500 outline-none transition"
+        required
+      />
+      <select
+        value={contactForm.service}
+        onChange={(e) => setContactForm({ ...contactForm, service: e.target.value })}
+        className="w-full px-6 py-4 bg-black border-2 border-gray-700 focus:border-orange-500 rounded-lg text-white outline-none transition"
+        required
+      >
+        <option value="">Select Service Type</option>
+        <option value="frontend">Front-End Development</option>
+        <option value="backend">Build Backend</option>
+        <option value="redesign">Website Redesign</option>
+        <option value="bugfix">Bug Fixing</option>
+        <option value="landing">Landing Page Development</option>
+        <option value="other">Other</option>
+      </select>
+      <textarea
+        placeholder="Your Message"
+        value={contactForm.message}
+        onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+        className="w-full px-6 py-4 bg-black border-2 border-gray-700 focus:border-orange-500 rounded-lg text-white placeholder-gray-500 outline-none transition resize-none"
+        rows="5"
+        required
+      ></textarea>
+      <button
+        type="submit"
+        className="w-full px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-orange-500/50 transition"
+      >
+        {formSubmitted ? "✓ Message Sent!" : "Send Message"}
+      </button>
+    </form>
 
             {/* Contact Info */}
             <div className="space-y-8">

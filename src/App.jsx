@@ -44,33 +44,38 @@ export default function Portfolio() {
     }
 
     // Save to browser storage
-    async function formdata() {
-      try {
-      // API call to backend
-      const response =  await fetch("https://portfolio-backend-production-8cb0.up.railway.app/api/submissions", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(contactForm)
-      });
+    async function submitData() {
+       try {
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify({
+        access_key: "aec8c1d2-f6ca-4e0b-846a-4528b274954a",
+        fullname: contactForm.fullname,
+        email: contactForm.email,
+        phone: contactForm.phone,
+        service: contactForm.service,
+        message: contactForm.message
+      })
+    });
 
-      const result = await response.json();
-
-      if (response.ok) {
-        setFormSubmitted(true);
-        setTimeout(() => setFormSubmitted(false), 3000);
-        setContactForm({ fullname: '', email: '', phone: '', service: '', message: '' });
-      } else {
-        alert(result.message || 'Error submitting form');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('Error submitting form. Make sure backend is running!');
+    const result = await response.json();
+    if (result.success) {
+      alert("Thank you! Your message has been sent.");
+      setContactForm({ fullname: "", email: "", phone: "", service: "", message: "" });
+    } else {
+      alert("Failed to send. Please try again.");
     }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("⚠️ Something went wrong. Please try again later.");
+  }
     }
-    formdata();
-  };
+   submitData();
+};
 
   const skills = [
     { name: 'HTML', level: 'Expert', color: 'from-red-500 to-orange-500', logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg' },
